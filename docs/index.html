@@ -42,7 +42,7 @@
             const windowsUValue = parseFloat(document.getElementById('windowsUValue').value);
             const heatingSystem = parseFloat(document.getElementById('heatingSystem').value);
 
-            const response = await fetch('/calculate', {
+            const response = await fetch('https://bim4energyapp.onrender.com', {  // Update the URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
