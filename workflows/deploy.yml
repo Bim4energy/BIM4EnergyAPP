@@ -1,4 +1,4 @@
-name: Deploy Flask App
+name: Deploy BIM4Energy App
 
 on:
   push:
@@ -25,6 +25,4 @@ jobs:
       - name: Deploy to GitHub Pages
         run: |
           mkdir -p out
-          echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Flask App</title></head><body><h1>Deployed Flask App</h1><p>This is a placeholder page.</p></body></html>' > out/index.html
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BIM4Energy App</title></head><body><h1>Deployed BIM4Energy App</h1><p>This is a placeholder page.</p></body></html>' >
