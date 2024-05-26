@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIM4Energy Case Study Explorer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>BIM4Energy Case Study Explorer</h1>
+        <div class="input-group">
+            <label for="caseSelect">Select Case:</label>
+            <select id="caseSelect">
+                <option value="dormitory">Dormitory Vilnius, Lithuania</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="climateSelect">Select Climate Scenario:</label>
+            <select id="climateSelect">
+                <option value="vilnius">Vilnius TMY.epw</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="windowsUValue">Windows U-value:</label>
+            <input type="number" id="windowsUValue" step="0.01" value="1.2">
+        </div>
+        <div class="input-group">
+            <label for="heatingSystem">Heating System:</label>
+            <input type="number" id="heatingSystem" step="0.01" value="0.9">
+        </div>
+        <button onclick="calculate()">Calculate</button>
+        <div class="chart-container">
+            <canvas id="energyChart"></canvas>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        async function calculate() {
+            const caseSelect = document.getElementById('caseSelect').value;
+            const climateSelect = document.getElementById('climateSelect').value;
+            const windowsUValue = parseFloat(document.getElementById('windowsUValue').value);
+            const heatingSystem = parseFloat(document.getElementById('heatingSystem').value);
+
+            const response = await fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ caseSelect, climateSelect, windowsUValue, heatingSystem }),
+            });
+
+            const data = await response.json();
+
+            const ctx = document.getElementById('energyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Base Case', 'Improved'],
+                    datasets: [
+                        {
+                            label: 'Heating',
+                            data: data.heating,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Cooling',
+                            data: data.cooling,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+        }
+    </script>
+</body>
+</html>
